@@ -97,6 +97,7 @@ jupyter nbconvert --to notebook --execute notebooks\NB.ipynb --output NB.ipynb -
 
 ## Gruppe
 
+Haris, Chris & Daniel
 ZHAW – Modul: Einsatz von Geodaten im Marketing (EGM) – FS2026
 
 ## Quellen
