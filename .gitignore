@@ -1,13 +1,37 @@
+# Python
 venv/
 __pycache__/
 *.pyc
-.jupyter/
 .ipynb_checkpoints/
+
+# Environment
+.env
+
+# Grosse Geodaten (zu gross fuer GitHub)
 data/raw/*
 !data/raw/.gitkeep
-data/processed/*
+!data/raw/kantone_ch_lv95.geojson
+!data/raw/stadtquartiere_zuerich.geojson
+
+data/processed/gemeinden_ch.geojson
+data/processed/gemeinden_ch_lv95.geojson
+data/processed/gemeinden_mit_distanz.geojson
+data/processed/gemeinden_mit_distanz.gpkg
+data/processed/gemeinden_distanz_apotheke.csv
+data/processed/plz_ch.geojson
+data/processed/plz_ch_lv95.geojson
+
+# Kleine Dateien pushen wir
+!data/processed/pharmacies_ch.geojson
+!data/processed/stadtquartiere_zuerich.geojson
+!data/processed/isochrones_5min_car_sample.geojson
+!data/processed/05_unterversorgte_gemeinden.csv
+!data/processed/05_versorgungskategorien.csv
 !data/processed/.gitkeep
-outputs/maps/*
-!outputs/maps/.gitkeep
-*.env
+
+# Outputs behalten
+outputs/
+
+# OS
 .DS_Store
+Thumbs.db
