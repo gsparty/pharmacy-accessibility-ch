@@ -13,38 +13,39 @@
 | Apotheken in CH (OSM) | 1640 |
 | Analysierte Gemeinden | 2123 |
 | Gemeinden ohne eigene Apotheke | 1562 (74%) |
-| Bevoelkerung > 5km von Apotheke | 832482 (9.15%) |
-| Bevoelkerung > 10km von Apotheke | 127106 (1.40%) |
+| Bevölkerung > 5km von Apotheke | 832'482 (9.15%) |
+| Bevölkerung > 10km von Apotheke | 127'106 (1.40%) |
 | Schlechtestversorgte Gemeinde | Rheinwald GR (23.2 km) |
-| Best versorgter Kanton Median | Basel-Stadt BS (503 m) |
-| Schlechtester Kanton Median | Uri UR (8829 m) |
-| Morans I Apothekendichte | 0.361 p=0.001 signifikant |
+| Best versorgter Kanton (Median) | Basel-Stadt BS (503 m) |
+| Schlechtester Kanton (Median) | Uri UR (8829 m) |
+| Moran's I (Apothekendichte) | 0.361, p=0.001 (signifikant) |
 
 ## Projektstruktur
+
 ```
 pharmacy-accessibility-ch/
-??? data/
-?   ??? raw/
-?   ?   ??? kantone_ch_lv95.geojson        # Kantone (im Repo)
-?   ?   ??? stadtquartiere_zuerich.geojson # 34 Quartiere ZH (im Repo)
-?   ?   # Grosse Dateien (>60MB) nicht im Repo - via NB01 herunterladen
-?   ??? processed/
-?       ??? pharmacies_ch.geojson          # 1640 Apotheken (im Repo)
-?       ??? stadtquartiere_zuerich.geojson # Quartiere ZH (im Repo)
-?       ??? isochrones_5min_car_sample.geojson # ORS Stichprobe (im Repo)
-?       ??? 05_*.csv                       # Auswertungen (im Repo)
-?       # gemeinden_ch.geojson (61MB) und plz_ch.geojson (113MB) nicht im Repo
-??? notebooks/
-?   ??? 01_data_acquisition.ipynb   # Datenbeschaffung OSM, swisstopo, BFS
-?   ??? 02_postgis_analysis.ipynb   # ST_Within, ST_Distance, Choropleth
-?   ??? 03_isochrones_ors.ipynb     # ORS Fahrzeitanalyse (API Key noetig)
-?   ??? 04_spatial_analysis.ipynb   # Morans I, LISA, Zuerich, Kantone
-?   ??? 05_population_coverage.ipynb # Bevoelkerungsabdeckung
-?   ??? 06_visualization.ipynb      # Finale Karten fuer Praesentation
-??? outputs/maps/                   # 13 generierte Karten (PNG)
-??? .env.example                    # Vorlage fuer API Keys
-??? requirements.txt
-??? README.md
+├── data/
+│   ├── raw/
+│   │   ├── kantone_ch_lv95.geojson         # Kantone (im Repo, 2.6MB)
+│   │   └── stadtquartiere_zuerich.geojson  # 34 Quartiere ZH (im Repo, 2.1MB)
+│   │   # Grosse Dateien (>60MB) nicht im Repo – via NB01 herunterladen
+│   └── processed/
+│       ├── pharmacies_ch.geojson           # 1640 Apotheken (im Repo, 0.4MB)
+│       ├── stadtquartiere_zuerich.geojson  # Quartiere ZH (im Repo)
+│       ├── isochrones_5min_car_sample.geojson  # ORS Stichprobe (im Repo)
+│       └── 05_*.csv                        # Auswertungen (im Repo)
+│       # gemeinden_ch.geojson (61MB) und plz_ch.geojson (113MB) → via NB01
+├── notebooks/
+│   ├── 01_data_acquisition.ipynb    # Datenbeschaffung OSM, swisstopo, BFS
+│   ├── 02_postgis_analysis.ipynb    # ST_Within, ST_Distance, Choropleth
+│   ├── 03_isochrones_ors.ipynb      # ORS Fahrzeitanalyse (API Key nötig)
+│   ├── 04_spatial_analysis.ipynb    # Moran's I, LISA, Zürich, Kantone
+│   ├── 05_population_coverage.ipynb # Bevölkerungsabdeckung
+│   └── 06_visualization.ipynb       # Finale Karten für Präsentation
+├── outputs/maps/                    # 13 generierte Karten (PNG)
+├── .env.example                     # Vorlage für API Keys
+├── requirements.txt
+└── README.md
 ```
 
 ## Setup
@@ -61,72 +62,72 @@ pip install -r requirements.txt
 ### 2. API Key setzen
 ```powershell
 Copy-Item .env.example .env
-# .env oeffnen und ORS_API_KEY eintragen
+# .env öffnen und ORS_API_KEY eintragen
 # Kostenloser Key: https://openrouteservice.org/dev/#/signup
 ```
 
 ### 3. PostgreSQL + PostGIS einrichten
 PostgreSQL 16 + PostGIS 3.6 muss lokal installiert sein.
 ```powershell
-$env:PGPASSWORD = "postgres"
 psql -U postgres -c "CREATE DATABASE pharmacy_ch;"
 psql -U postgres -d pharmacy_ch -c "CREATE EXTENSION postgis CASCADE;"
 ```
 
-### 4. Notebooks ausfuehren
-Notebooks der Reihe nach ausfuehren - NB01 laedt alle grossen Geodaten herunter.
+### 4. Notebooks ausführen
+Notebooks der Reihe nach ausführen – NB01 lädt alle grossen Geodaten herunter.
 ```powershell
 jupyter nbconvert --to notebook --execute notebooks\01_data_acquisition.ipynb --output 01_data_acquisition.ipynb --output-dir notebooks --ExecutePreprocessor.timeout=300
 ```
 
-### Hinweis fuer Teammitglieder
+### Hinweis für Teammitglieder
 - `data/raw/` und `data/processed/` enthalten nur kleine Hilfsdateien im Repo
 - Grosse Geodaten (Gemeinden 61MB, PLZ 113MB) werden durch NB01 automatisch heruntergeladen
-- `.env` ist nicht im Repo - ORS API Key separat beantragen (kostenlos)
+- `.env` ist nicht im Repo – ORS API Key separat beantragen (kostenlos, openrouteservice.org)
+- PostgreSQL muss lokal laufen für Notebook 02
 
 ## Datenquellen
 
 | Datei | Quelle | Inhalt | Im Repo |
 |-------|--------|--------|---------|
-| pharmacies_ch.geojson | OpenStreetMap / Overpass API | 1640 Apotheken | Ja (0.4MB) |
-| gemeinden_ch_lv95.geojson | swisstopo swissBOUNDARIES3D 2026 | 2123 Gemeinden | Nein (62MB) |
-| plz_ch_lv95.geojson | swisstopo Ortschaftenverzeichnis | 4073 PLZ | Nein (113MB) |
-| stadtquartiere_zuerich.geojson | Stadt Zuerich OGD | 34 Quartiere | Ja (2.1MB) |
-| kantone_ch_lv95.geojson | swisstopo swissBOUNDARIES3D 2026 | Kantone | Ja (2.6MB) |
+| pharmacies_ch.geojson | OpenStreetMap / Overpass API | 1640 Apotheken | ✅ 0.4MB |
+| gemeinden_ch_lv95.geojson | swisstopo swissBOUNDARIES3D 2026 | 2123 Gemeinden | ❌ 62MB |
+| plz_ch_lv95.geojson | swisstopo Ortschaftenverzeichnis | 4073 PLZ | ❌ 113MB |
+| stadtquartiere_zuerich.geojson | Stadt Zürich OGD | 34 Quartiere | ✅ 2.1MB |
+| kantone_ch_lv95.geojson | swisstopo swissBOUNDARIES3D 2026 | Kantone | ✅ 2.6MB |
 
-Projektion: LV95 EPSG:2056 - Schweizer Landeskoordinaten, Distanzen in Metern
+**Projektion:** LV95 (EPSG:2056) – Schweizer Landeskoordinaten, Distanzen in Metern
 
 ## Methoden
 
-- GeoPandas & Shapely: Raeumliche Datenverarbeitung in Python
-- PostgreSQL/PostGIS: ST_Within, ST_Distance, ST_DWithin, GIST-Indizes
-- OpenRouteService API: Fahrzeitanalyse und Isochronen (5/10/15 Min)
-- PySAL/ESDA: Spatial Autocorrelation (Morans I = 0.361, p = 0.001)
-- Matplotlib: Choropleth-Karten, Boxplots, Histogramme
+- **GeoPandas & Shapely**: Räumliche Datenverarbeitung in Python
+- **PostgreSQL/PostGIS**: ST_Within, ST_Distance, ST_DWithin, GIST-Indizes
+- **OpenRouteService API**: Fahrzeitanalyse und Isochronen (5/10/15 Min)
+- **PySAL/ESDA**: Spatial Autocorrelation (Moran's I = 0.361, p = 0.001)
+- **Matplotlib**: Choropleth-Karten, Boxplots, Histogramme
 
-## Generierte Karten (outputs/maps/)
+## Generierte Karten (`outputs/maps/`)
 
 | Datei | Inhalt |
 |-------|--------|
 | 01_apotheken_uebersicht.png | Alle 1640 Apotheken auf CH-Karte |
-| 02_distanz_apotheke.png | Choropleth: Distanz zur naechsten Apotheke |
+| 02_distanz_apotheke.png | Choropleth: Distanz zur nächsten Apotheke |
 | 03_einzeltest_isochrone.png | ORS: Zu Fuss vs. Auto Vergleich |
 | 03_isochronen_5min_auto.png | Isochronen Stichprobe 20 Apotheken |
-| 04_lisa_cluster.png | LISA Cluster Map (Morans I = 0.361) |
-| 04_boxplot_kantone.png | Distanz nach Kanton sortiert nach Median |
-| 04_zuerich_quartiere.png | Zuerich: Apotheken pro Stadtquartier |
-| 05_bevoelkerungsabdeckung.png | Bevoelkerungsanteil nach Distanz |
+| 04_lisa_cluster.png | LISA Cluster Map (Moran's I = 0.361) |
+| 04_boxplot_kantone.png | Distanz nach Kanton, sortiert nach Median |
+| 04_zuerich_quartiere.png | Zürich: Apotheken pro Stadtquartier |
+| 05_bevoelkerungsabdeckung.png | Bevölkerungsanteil nach Distanz |
 | 05_unterversorgte_gemeinden.png | Karte unterversorgter Gemeinden |
-| 06_hauptkarte_distanz.png | Finale Hauptkarte fuer Praesentation |
-| 06_distanz_histogramm.png | Bevoelkerungsverteilung nach Distanz |
+| 06_hauptkarte_distanz.png | Finale Hauptkarte für Präsentation |
+| 06_distanz_histogramm.png | Bevölkerungsverteilung nach Distanz |
 
 ## Quellen
 
-- OpenStreetMap Contributors (2024). Overpass API. https://overpass-api.de
-- swisstopo (2026). swissBOUNDARIES3D 2026. https://data.geo.admin.ch
-- Stadt Zuerich (2024). Stadtquartiere OGD. https://data.stadt-zuerich.ch
-- OpenRouteService (2024). Isochrones API. https://openrouteservice.org
+- OpenStreetMap Contributors (2024). *Overpass API*. https://overpass-api.de
+- swisstopo (2026). *swissBOUNDARIES3D 2026*. https://data.geo.admin.ch
+- Stadt Zürich (2024). *Stadtquartiere OGD*. https://data.stadt-zuerich.ch
+- OpenRouteService (2024). *Isochrones API*. https://openrouteservice.org
 
 ## Gruppe
 
-ZHAW - Modul: Einsatz von Geodaten im Marketing (EGM) - FS2026
+ZHAW – Modul: Einsatz von Geodaten im Marketing (EGM) – FS2026
