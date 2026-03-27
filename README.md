@@ -79,6 +79,28 @@ Notebooks der Reihe nach ausführen – NB01 lädt alle grossen Geodaten herunte
 jupyter nbconvert --to notebook --execute notebooks\01_data_acquisition.ipynb --output 01_data_acquisition.ipynb --output-dir notebooks --ExecutePreprocessor.timeout=300
 ```
 
+### Setup Mac/Linux (alternative)
+```bash
+git clone https://github.com/gsparty/pharmacy-accessibility-ch.git
+cd pharmacy-accessibility-ch
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# .env öffnen und ORS_API_KEY eintragen
+
+# PostgreSQL 17 + PostGIS via Homebrew installieren
+brew install postgresql@17 postgis
+brew services start postgresql@17
+
+# Datenbank erstellen
+psql postgres -c "CREATE DATABASE pharmacy_ch;"
+psql postgres -d pharmacy_ch -c "CREATE EXTENSION postgis CASCADE;"
+
+# Notebooks ausführen (Forward Slashes)
+jupyter nbconvert --to notebook --execute notebooks/01_data_acquisition.ipynb --output 01_data_acquisition.ipynb --output-dir notebooks --ExecutePreprocessor.timeout=300
+```
+
 ### Hinweis für Teammitglieder
 - `data/raw/` und `data/processed/` enthalten nur kleine Hilfsdateien im Repo
 - Grosse Geodaten (Gemeinden 61MB, PLZ 113MB) werden durch NB01 automatisch heruntergeladen
