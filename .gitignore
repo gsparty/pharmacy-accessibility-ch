@@ -29,8 +29,12 @@ data/processed/plz_ch_lv95.geojson
 !data/processed/05_versorgungskategorien.csv
 !data/processed/.gitkeep
 
-# Outputs behalten
-outputs/
+# Outputs: nur Karten-PNGs versionieren (Rest unter outputs/ optional ignorieren)
+outputs/*
+!outputs/maps/
+outputs/maps/*
+!outputs/maps/*.png
+!outputs/maps/.gitkeep
 
 # OS
 .DS_Store

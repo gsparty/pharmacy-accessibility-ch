@@ -42,7 +42,7 @@ pharmacy-accessibility-ch/
 │   ├── 04_spatial_analysis.ipynb    # Moran's I, LISA, Zürich, Kantone
 │   ├── 05_population_coverage.ipynb # Bevölkerungsabdeckung
 │   └── 06_visualization.ipynb       # Finale Karten für Präsentation
-├── outputs/maps/                    # 13 generierte Karten (PNG)
+├── outputs/maps/                    # Generierte Karten (PNG, im Repo)
 ├── .env.example                     # Vorlage für API Keys
 ├── requirements.txt
 └── README.md
@@ -140,7 +140,9 @@ jupyter nbconvert --to notebook --execute notebooks/01_data_acquisition.ipynb --
 | 04_zuerich_quartiere.png | Zürich: Apotheken pro Stadtquartier |
 | 05_bevoelkerungsabdeckung.png | Bevölkerungsanteil nach Distanz |
 | 05_unterversorgte_gemeinden.png | Karte unterversorgter Gemeinden |
-| 06_hauptkarte_distanz.png | Finale Hauptkarte für Präsentation |
+| 06_hauptkarte_distanz.png | Hauptkarte Distanz (mit Statistik-Box) |
+| 06_hauptkarte_distanz_final.png | Hauptkarte für Präsentation (ohne Box) |
+| 06_kennzahlen_dashboard.png | Kennzahlen-Kacheln für Slides |
 | 06_distanz_histogramm.png | Bevölkerungsverteilung nach Distanz |
 
 ## Quellen
